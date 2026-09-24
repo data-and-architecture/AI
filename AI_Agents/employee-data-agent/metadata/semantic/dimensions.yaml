@@ -1,0 +1,45 @@
+version: "1.0"
+dimensions:
+  - id: department
+    name: Department
+    description: >
+      Organizational department associated with an employee.
+    source:
+      dataset: departments
+      column: department_name
+    type: categorical
+    related_dataset:
+      dataset: employees
+      column: department_id
+  - id: location
+    name: Location
+    description: >
+      Primary location of the employee's department.
+    source:
+      dataset: departments
+      column: location
+    type: categorical
+  - id: job_title
+    name: Job Title
+    description: >
+      Current job title of an employee.
+    source:
+      dataset: employees
+      column: job_title
+    type: categorical
+  - id: employment_status
+    name: Employment Status
+    description: >
+      Current employment status of an employee.
+    source:
+      dataset: employees
+      column: employment_status
+    type: categorical
+  - id: hire_date
+    name: Hire Date
+    description: >
+      Date when the employee joined the organization.
+    source:
+      dataset: employees
+      column: hire_date
+    type: date

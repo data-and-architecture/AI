@@ -1,0 +1,68 @@
+version: "1.0"
+glossary:
+  name: HR Business Glossary
+  domain: HR
+terms:
+  - id: employee
+    name: Employee
+    definition: >
+      A person formally employed by the organization.
+    domain: HR
+    status: approved
+    owner: HR
+    related_datasets:
+      - employees
+  - id: active_employee
+    name: Active Employee
+    definition: >
+      An employee whose current employment status is ACTIVE.
+    domain: HR
+    status: approved
+    owner: HR
+    business_rule:
+      field: employees.employment_status
+      operator: equals
+      value: ACTIVE
+    related_datasets:
+      - employees
+  - id: department
+    name: Department
+    definition: >
+      An organizational unit responsible for a defined
+      business function.
+    domain: HR
+    status: approved
+    owner: HR
+    related_datasets:
+      - departments
+  - id: salary
+    name: Salary
+    definition: >
+      The base salary amount associated with an employee.
+    domain: HR
+    status: approved
+    owner: HR
+    related_datasets:
+      - employees
+  - id: hire_date
+    name: Hire Date
+    definition: >
+      The date on which an employee joined the organization.
+    domain: HR
+    status: approved
+    owner: HR
+    related_datasets:
+      - employees
+  - id: employment_status
+    name: Employment Status
+    definition: >
+      The current state of an employee's employment relationship
+      with the organization.
+    domain: HR
+    status: approved
+    owner: HR
+    allowed_values:
+      - ACTIVE
+      - INACTIVE
+      - TERMINATED
+      - ON_LEAVE

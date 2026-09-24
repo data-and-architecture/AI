@@ -1,0 +1,62 @@
+roles:
+
+  DATA_ANALYST:
+
+    can_view_sql: false
+
+    domains:
+      - HR
+
+    datasets:
+      - employees
+      - departments
+
+    metrics:
+      - employee_count
+      - active_employee_count
+      - average_salary
+      - department_employee_count
+      - department_count
+
+    columns:
+      - employees.employee_id
+      - employees.employment_status
+      - employees.department_id
+      - employees.job_title
+      - employees.hire_date
+      - employees.email
+      - departments.department_id
+      - departments.department_name
+      - departments.location
+
+    denied_columns:
+      - employees.salary
+
+    # Row-level restrictions applied on top of any dataset the role
+    # can otherwise see.
+    #row_filters:
+    #  - dataset: employees
+    #    column: employment_status
+    #    operator: "!="
+    #    value: TERMINATED
+
+    # Confidential columns that are visible but must be masked
+    # rather than shown in the clear.
+    masking:
+      - column: employees.email
+        strategy: partial
+
+    limits:
+      max_rows: 5000
+      max_scan_mb: 512
+      max_execution_seconds: 30
+
+  DATA_ENGINEER:
+
+    # Combine this role with a data-access role to expose governed SQL.
+    can_view_sql: true
+
+  DATA_ADMIN:
+
+    can_view_sql: true
+    can_view_admin: true

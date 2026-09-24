@@ -1,0 +1,133 @@
+version: "1.0"
+columns:
+  # ==========================================================
+  # EMPLOYEES
+  # ==========================================================
+  - id: employees.employee_id
+    dataset: employees
+    name: employee_id
+    data_type: integer
+    nullable: false
+    primary_key: true
+    description: >
+      Unique technical identifier for an employee.
+    classification: internal
+  - id: employees.employee_number
+    dataset: employees
+    name: employee_number
+    data_type: varchar
+    nullable: false
+    unique: true
+    description: >
+      Business employee number used to identify an employee.
+    classification: internal
+  - id: employees.first_name
+    dataset: employees
+    name: first_name
+    data_type: varchar
+    nullable: false
+    description: >
+      Employee first name.
+    classification: internal
+  - id: employees.last_name
+    dataset: employees
+    name: last_name
+    data_type: varchar
+    nullable: false
+    description: >
+      Employee last name.
+    classification: internal
+  - id: employees.email
+    dataset: employees
+    name: email
+    data_type: varchar
+    nullable: false
+    unique: true
+    description: >
+      Employee corporate email address.
+    classification: confidential
+  - id: employees.job_title
+    dataset: employees
+    name: job_title
+    data_type: varchar
+    nullable: true
+    description: >
+      Current job title assigned to the employee.
+    classification: internal
+  - id: employees.department_id
+    dataset: employees
+    name: department_id
+    data_type: integer
+    nullable: false
+    description: >
+      Identifier of the department to which the employee belongs.
+    classification: internal
+    foreign_key:
+      dataset: departments
+      column: department_id
+  - id: employees.hire_date
+    dataset: employees
+    name: hire_date
+    data_type: date
+    nullable: true
+    description: >
+      Date on which the employee joined the organization.
+    classification: internal
+  - id: employees.salary
+    dataset: employees
+    name: salary
+    data_type: decimal
+    nullable: true
+    description: >
+      Employee base salary.
+    classification: confidential
+  - id: employees.employment_status
+    dataset: employees
+    name: employment_status
+    data_type: varchar
+    nullable: false
+    description: >
+      Current employment status of the employee.
+    allowed_values:
+      - ACTIVE
+      - INACTIVE
+      - TERMINATED
+      - ON_LEAVE
+    classification: internal
+  # ==========================================================
+  # DEPARTMENTS
+  # ==========================================================
+  - id: departments.department_id
+    dataset: departments
+    name: department_id
+    data_type: integer
+    nullable: false
+    primary_key: true
+    description: >
+      Unique technical identifier for a department.
+    classification: internal
+  - id: departments.department_code
+    dataset: departments
+    name: department_code
+    data_type: varchar
+    nullable: false
+    unique: true
+    description: >
+      Business code identifying a department.
+    classification: internal
+  - id: departments.department_name
+    dataset: departments
+    name: department_name
+    data_type: varchar
+    nullable: false
+    description: >
+      Official business name of the department.
+    classification: internal
+  - id: departments.location
+    dataset: departments
+    name: location
+    data_type: varchar
+    nullable: true
+    description: >
+      Primary physical location associated with the department.
+    classification: internal

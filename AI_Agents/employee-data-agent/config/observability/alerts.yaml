@@ -1,0 +1,38 @@
+groups:
+  - name: employee-data-agent
+    rules:
+      - alert: EmployeeDataAgentFailureRateHigh
+        expr: |
+          sum(rate(employee_data_agent_requests_total{outcome="failure"}[5m]))
+          / clamp_min(sum(rate(employee_data_agent_requests_total[5m])), 1) > 0.05
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: Employee data agent failure rate exceeds 5 percent
+
+      - alert: EmployeeDataAgentLatencyHigh
+        expr: |
+          histogram_quantile(0.95, sum(rate(employee_data_agent_request_latency_seconds_bucket[5m])) by (le)) > 5
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: Employee data agent p95 request latency exceeds 5 seconds
+
+      - alert: EmployeeDataAgentPolicyDenialsHigh
+        expr: sum(rate(employee_data_agent_policy_denials_total[15m])) > 10
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: Employee data agent policy denials are elevated
+
+      - alert: EmployeeDataAgentRepeatedValidationErrors
+        expr: |
+          sum by (error_type) (rate(employee_data_agent_validation_errors_total[15m])) > 0.2
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: Employee data agent validation errors are repeating

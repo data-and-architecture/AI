@@ -1,0 +1,42 @@
+version: "1.0"
+catalog:
+  name: employee_data_catalog
+  domain: HR
+datasets:
+  - id: employees
+    name: Employees
+    type: table
+    description: >
+      Contains employee master data including identity,
+      employment status, organizational assignment,
+      job title, hire date and salary.
+    domain: HR
+    database:
+      connection: hr_postgres_readonly
+      name: hr_database
+      schema: public
+      table: employees
+    owner:
+      team: HR Analytics
+    classification: internal
+    status: active
+    refresh:
+      frequency: daily
+  - id: departments
+    name: Departments
+    type: table
+    description: >
+      Contains organizational department information
+      including department name, code and location.
+    domain: HR
+    database:
+      connection: hr_postgres_readonly
+      name: hr_database
+      schema: public
+      table: departments
+    owner:
+      team: HR Analytics
+    classification: internal
+    status: active
+    refresh:
+      frequency: daily

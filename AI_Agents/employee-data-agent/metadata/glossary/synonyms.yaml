@@ -1,0 +1,38 @@
+version: "1.0"
+synonyms:
+  - canonical_term: employee
+    values:
+      - employee
+      - employees
+      - staff
+      - worker
+      - workers
+      - personnel
+      - people
+  - canonical_term: department
+    values:
+      - department
+      - departments
+      - team
+      - teams
+      - organizational unit
+      - organizational units
+  - canonical_term: salary
+    values:
+      - salary
+      - salaries
+      - base salary
+      - base salaries
+      - pay
+  - canonical_term: active_employee
+    values:
+      - active employee
+      - active employees
+      - current employee
+      - current employees
+  - canonical_term: hire_date
+    values:
+      - hire date
+      - joining date
+      - start date
+      - employment start date

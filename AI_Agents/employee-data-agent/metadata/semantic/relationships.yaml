@@ -1,0 +1,19 @@
+version: "1.0"
+relationships:
+  - id: employee_department
+    name: Employee to Department
+    from:
+      dataset: employees
+      column: department_id
+    to:
+      dataset: departments
+      column: department_id
+    relationship_type: foreign_key
+    cardinality: many_to_one
+    description: >
+      Each employee belongs to one department.
+      A department can contain many employees.
+    join:
+      type: inner
+      condition: >
+        employees.department_id = departments.department_id

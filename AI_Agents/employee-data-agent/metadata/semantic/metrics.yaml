@@ -1,0 +1,95 @@
+version: "1.0"
+semantic_layer:
+  name: HR Semantic Layer
+  domain: HR
+metrics:
+  - id: employee_count
+    name: Employee Count
+    description: >
+      Number of unique employees.
+    expression:
+      type: count_distinct
+      sql: COUNT(DISTINCT employees.employee_id)
+    source:
+      dataset: employees
+      column: employee_id
+    allowed_dimensions:
+      - department
+      - location
+      - job_title
+      - employment_status
+      - hire_date
+    format:
+      type: integer
+  - id: active_employee_count
+    name: Active Employee Count
+    description: >
+      Number of unique employees whose employment status
+      is ACTIVE.
+    expression:
+      type: count_distinct
+      sql: COUNT(DISTINCT employees.employee_id)
+    source:
+      dataset: employees
+      column: employee_id
+    filters:
+      - field: employees.employment_status
+        operator: equals
+        value: ACTIVE
+    allowed_dimensions:
+      - department
+      - location
+      - job_title
+      - hire_date
+    format:
+      type: integer
+  - id: total_salary
+    name: Total Salary
+    description: >
+      Sum of employee base salaries.
+    expression:
+      type: sum
+      sql: SUM(employees.salary)
+    source:
+      dataset: employees
+      column: salary
+    allowed_dimensions:
+      - department
+      - location
+      - job_title
+      - employment_status
+    verification:
+      mode: sum_of_groups
+    format:
+      type: currency
+  - id: average_salary
+    name: Average Salary
+    description: >
+      Average employee base salary.
+    expression:
+      type: average
+      sql: AVG(employees.salary)
+    source:
+      dataset: employees
+      column: salary
+    allowed_dimensions:
+      - department
+      - location
+      - job_title
+      - employment_status
+    format:
+      type: currency
+  - id: department_count
+    name: Department Count
+    description: >
+      Number of unique departments.
+    expression:
+      type: count_distinct
+      sql: COUNT(DISTINCT departments.department_id)
+    source:
+      dataset: departments
+      column: department_id
+    allowed_dimensions:
+      - location
+    format:
+      type: integer

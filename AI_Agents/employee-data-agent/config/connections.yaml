@@ -1,0 +1,19 @@
+connections:
+  - id: hr_postgres_readonly
+    dialect: postgres
+    database_name: hr_database
+    url_env: DATABASE_URL
+    read_only: true
+    pool_size: 5
+    max_overflow: 5
+
+  # Register additional SQL Server databases explicitly. The URL must
+  # use a least-privilege, read-only service identity and an
+  # mssql+pyodbc SQLAlchemy URL.
+  - id: hr_sqlserver_readonly
+    dialect: sqlserver
+    database_name: hr_sqlserver
+    url_env: SQLSERVER_HR_DATABASE_URL
+    read_only: true
+    pool_size: 5
+    max_overflow: 5

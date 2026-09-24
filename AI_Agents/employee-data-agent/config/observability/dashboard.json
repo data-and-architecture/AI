@@ -1,0 +1,61 @@
+{
+  "title": "Employee Data Agent",
+  "tags": ["employee-data-agent", "observability"],
+  "timezone": "utc",
+  "panels": [
+    {
+      "title": "Request Outcomes",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "sum(rate(employee_data_agent_requests_total[5m])) by (outcome)",
+          "legendFormat": "{{outcome}}"
+        }
+      ]
+    },
+    {
+      "title": "Request Latency p95",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(employee_data_agent_request_latency_seconds_bucket[5m])) by (le))",
+          "legendFormat": "p95"
+        }
+      ]
+    },
+    {
+      "title": "Database Time p95",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(employee_data_agent_database_duration_seconds_bucket[5m])) by (le))",
+          "legendFormat": "p95"
+        }
+      ]
+    },
+    {
+      "title": "Policy Denials and Validation Errors",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "sum(rate(employee_data_agent_policy_denials_total[5m]))",
+          "legendFormat": "policy denials"
+        },
+        {
+          "expr": "sum(rate(employee_data_agent_validation_errors_total[5m])) by (error_type)",
+          "legendFormat": "validation {{error_type}}"
+        }
+      ]
+    },
+    {
+      "title": "Retries",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "sum(rate(employee_data_agent_retries_total[5m])) by (action)",
+          "legendFormat": "{{action}}"
+        }
+      ]
+    }
+  ]
+}

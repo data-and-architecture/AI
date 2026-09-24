@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Employee Data Agent</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap');
+    :root { --ink:#15201d; --muted:#5f6c67; --paper:#f2f4ef; --panel:#ffffff; --line:#d7ddd5; --accent:#d14e2b; --accent-dark:#9f321a; --sage:#dce9db; --night:#183630; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(120deg,#e8eee6 0%,#f4f5ef 48%,#e8e2d9 100%); font-family:"Space Grotesk",sans-serif; letter-spacing:0; }
+    .app { min-height:100vh; display:grid; grid-template-columns:272px minmax(0,1fr); }
+    aside { padding:28px 20px; background:var(--night); color:#eff5ed; display:flex; flex-direction:column; gap:25px; }
+    .brand { font-size:20px; font-weight:600; line-height:1.05; }
+    .brand span { color:#a7d0ad; display:block; font-size:13px; font-family:"DM Mono",monospace; margin-top:8px; }
+    label { font-size:12px; font-family:"DM Mono",monospace; color:var(--muted); display:block; margin-bottom:8px; }
+    aside label { color:#b7c8bf; }
+    input, textarea { width:100%; border:1px solid var(--line); background:#fff; color:var(--ink); border-radius:4px; padding:11px 12px; font:14px "DM Mono",monospace; outline:none; }
+    aside input { background:#23463e; border-color:#41645c; color:#f5f8f4; }
+    input:focus, textarea:focus { border-color:var(--accent); box-shadow:0 0 0 2px rgba(209,78,43,.12); }
+    .status { margin-top:auto; border-top:1px solid #41645c; padding-top:18px; color:#c6d4cc; font:12px "DM Mono",monospace; line-height:1.6; }
+    main { padding:28px clamp(18px,4vw,56px); display:grid; grid-template-rows:auto minmax(0,1fr); gap:22px; min-width:0; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:14px; }
+    h1 { font-size:26px; margin:0; font-weight:600; }
+    .tabs { display:flex; gap:7px; }
+    button { appearance:none; border:0; border-radius:4px; padding:10px 14px; font:600 14px "Space Grotesk",sans-serif; cursor:pointer; background:var(--accent); color:white; }
+    button:hover { background:var(--accent-dark); }
+    button.secondary { background:var(--sage); color:var(--ink); }
+    button.secondary:hover { background:#c6d9c4; }
+    button.ghost { background:transparent; color:var(--muted); border:1px solid var(--line); }
+    button.ghost.active { color:var(--ink); border-color:var(--ink); }
+    .view { display:none; min-height:0; }
+    .view.active { display:grid; }
+    #chat-view { grid-template-rows:minmax(260px,1fr) auto; gap:15px; }
+    .conversation { background:rgba(255,255,255,.74); border:1px solid rgba(215,221,213,.9); padding:22px; overflow:auto; min-height:360px; }
+    .message { max-width:860px; margin:0 0 18px; border-left:3px solid var(--accent); padding:5px 0 5px 14px; white-space:pre-wrap; line-height:1.55; }
+    .message.user { border-left-color:#6b9670; margin-left:auto; max-width:600px; }
+    .message .role { display:block; color:var(--muted); font:11px "DM Mono",monospace; margin-bottom:5px; text-transform:uppercase; }
+    .composer { display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:10px; align-items:end; }
+    textarea { resize:vertical; min-height:66px; max-height:180px; font-family:"Space Grotesk",sans-serif; }
+    #admin-view { grid-template-columns:minmax(0,1fr) minmax(0,1.45fr); gap:16px; align-content:start; }
+    .admin-section { border-top:2px solid var(--ink); padding-top:12px; }
+    .admin-section h2 { font-size:16px; margin:0 0 12px; }
+    pre { background:#17211e; color:#e9f0e9; border-radius:4px; padding:16px; margin:0; overflow:auto; min-height:220px; max-height:62vh; font:12px/1.55 "DM Mono",monospace; }
+    .meta-actions { display:flex; gap:10px; margin-bottom:12px; }
+    .hidden { display:none; }
+    @media (max-width:760px) { .app { grid-template-columns:1fr; } aside { padding:16px 18px; gap:14px; } .status { margin-top:0; } main { padding:18px; } header { align-items:flex-start; flex-direction:column; } .composer { grid-template-columns:1fr 1fr; } .composer textarea { grid-column:1/-1; } #admin-view { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand">Employee Data<br>Agent<span>GOVERNED QUERY WORKSPACE</span></div>
+      <div><label for="token">Bearer Token</label><input id="token" value="demo-token" autocomplete="off"></div>
+      <div><label for="session">Session</label><input id="session" autocomplete="off"></div>
+      <div class="status" id="status">Ready<br>Session history is scoped to the authenticated user.</div>
+    </aside>
+    <main>
+      <header>
+        <h1>Data Conversation</h1>
+        <div class="tabs"><button class="ghost active" data-view="chat-view">Chat</button><button class="ghost" data-view="admin-view">Admin</button></div>
+      </header>
+      <section id="chat-view" class="view active">
+        <div id="conversation" class="conversation"></div>
+        <div class="composer">
+          <textarea id="question" placeholder="Ask about employees, departments, or approved metrics."></textarea>
+          <button id="cancel" class="secondary hidden">Cancel</button>
+          <button id="send">Send</button>
+        </div>
+      </section>
+      <section id="admin-view" class="view">
+        <div class="admin-section"><h2>Metadata Status</h2><div class="meta-actions"><button id="load-metadata">Refresh</button></div><pre id="metadata-output">Administrative access required.</pre></div>
+        <div class="admin-section"><h2>Audit Events</h2><div class="meta-actions"><button id="load-audit">Refresh</button></div><pre id="audit-output">Administrative access required.</pre></div>
+      </section>
+    </main>
+  </div>
+  <script>
+    const $ = id => document.getElementById(id);
+    let activeRequestId = null;
+    const session = localStorage.getItem('employee-agent-session') || crypto.randomUUID();
+    $('session').value = session;
+    function auth() { return { Authorization: `Bearer ${$('token').value.trim()}` }; }
+    function addMessage(role, content) { const message = document.createElement('div'); message.className = `message ${role}`; message.innerHTML = `<span class="role">${role}</span>`; const text = document.createTextNode(content); message.appendChild(text); $('conversation').appendChild(message); $('conversation').scrollTop = $('conversation').scrollHeight; }
+    async function loadHistory() { const id = $('session').value.trim(); if (!id) return; const response = await fetch(`/sessions/${encodeURIComponent(id)}`, { headers: auth() }); if (!response.ok) return; const data = await response.json(); $('conversation').innerHTML = ''; data.messages.forEach(message => addMessage(message.role, message.content)); }
+    async function send() { const question = $('question').value.trim(); if (!question || activeRequestId) return; activeRequestId = crypto.randomUUID(); addMessage('user', question); $('question').value = ''; $('send').disabled = true; $('cancel').classList.remove('hidden'); $('status').textContent = 'Processing request...'; try { const response = await fetch('/chat', { method:'POST', headers:{ ...auth(), 'Content-Type':'application/json' }, body:JSON.stringify({ question, session_id:$('session').value.trim(), request_id:activeRequestId }) }); const data = await response.json(); if (!response.ok) throw new Error(data.detail || 'Request failed'); addMessage('assistant', data.answer); $('status').textContent = `Verified · ${data.request_id}`; } catch (error) { addMessage('assistant', error.message); $('status').textContent = 'Request did not complete.'; } finally { activeRequestId = null; $('send').disabled = false; $('cancel').classList.add('hidden'); } }
+    async function cancel() { if (!activeRequestId) return; await fetch(`/chat/${activeRequestId}/cancel`, { method:'POST', headers:auth() }); $('status').textContent = 'Cancellation requested...'; }
+    async function admin(path, output) { const response = await fetch(path, { headers:auth() }); const data = await response.json(); $(output).textContent = JSON.stringify(data, null, 2); }
+    document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => { document.querySelectorAll('[data-view]').forEach(tab => tab.classList.remove('active')); document.querySelectorAll('.view').forEach(view => view.classList.remove('active')); button.classList.add('active'); $(button.dataset.view).classList.add('active'); }));
+    $('send').addEventListener('click', send); $('cancel').addEventListener('click', cancel); $('load-metadata').addEventListener('click', () => admin('/admin/metadata', 'metadata-output')); $('load-audit').addEventListener('click', () => admin('/admin/audit', 'audit-output')); $('session').addEventListener('change', () => { localStorage.setItem('employee-agent-session', $('session').value.trim()); loadHistory(); }); $('question').addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); send(); } }); loadHistory();
+  </script>
+</body>
+</html>
